@@ -1,12 +1,16 @@
 #include <stdexcept>
 #include <QQuickWindow>
-#include <QCoreApplication>
+#include <QApplication>
+#include <QDesktopWidget>
 #include "manager.h"
 
 Manager::Manager(): rootObject_(0) {
 	loadQml();
 	connectToDatabase();
 	QQuickWindow & window = dynamic_cast<QQuickWindow &>(*rootObject_);
+	const QPoint screenCenter = QApplication::desktop()->screen()->rect().center();
+	window.setX(screenCenter.x() - window.width() / 2);
+	window.setY(screenCenter.y() - window.height() / 2);
 	window.show();
 }
 
