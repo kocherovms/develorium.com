@@ -21,6 +21,7 @@ void extractResult(QFutureWatcher<void> & theFw);
 class Facade {
 public:
 	Facade(ConnectionPtr & theConnection): connection_(theConnection) {}
+	virtual ~Facade() {}
 	struct SearchResults {
 		// ... domain specific data
 	};
@@ -38,7 +39,7 @@ public:
 		loop.exec(QEventLoop::ExcludeUserInputEvents);
 		return extractResult(fw);
 	}
-private:
+protected:
 	ConnectionPtr connection_;
 };
 
