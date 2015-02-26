@@ -1,0 +1,1 @@
+Compile with: g++ sample.cpp -ljack
