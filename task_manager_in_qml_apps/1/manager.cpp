@@ -11,6 +11,8 @@ http://develorium.com
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QThread>
+#include <QtConcurrent>
+#include <QFutureWatcher>
 #include "manager.h"
 
 namespace {
@@ -39,88 +41,116 @@ Manager::Manager(): rootObject_(0) {
 	window.show();
 }
 
+static void execSlowOperation() {
+	Operation op(__FUNCTION__, 500);
+}
+
 void Manager::onSlowOperation() {
-	Operation op(__FUNCTION__, 300);
+	QFutureWatcher<void> fw;
+	QEventLoop loop;
+	connect(&fw, SIGNAL(finished()), &loop, SLOT(quit()));
+	fw.setFuture(QtConcurrent::run(execSlowOperation));
+	loop.exec();
 }
 
 void Manager::onLongOperationsChain0() {
 	Operation op(__FUNCTION__, 15);
+	QCoreApplication::processEvents();
 }
 
 void Manager::onLongOperationsChain1() {
 	Operation op(__FUNCTION__, 15);
+	QCoreApplication::processEvents();
 }
 
 void Manager::onLongOperationsChain2() {
 	Operation op(__FUNCTION__, 15);
+	QCoreApplication::processEvents();
 }
 
 void Manager::onLongOperationsChain3() {
 	Operation op(__FUNCTION__, 15);
+	QCoreApplication::processEvents();
 }
 
 void Manager::onLongOperationsChain4() {
 	Operation op(__FUNCTION__, 15);
+	QCoreApplication::processEvents();
 }
 
 void Manager::onLongOperationsChain5() {
 	Operation op(__FUNCTION__, 15);
+	QCoreApplication::processEvents();
 }
 
 void Manager::onLongOperationsChain6() {
 	Operation op(__FUNCTION__, 15);
+	QCoreApplication::processEvents();
 }
 
 void Manager::onLongOperationsChain7() {
 	Operation op(__FUNCTION__, 15);
+	QCoreApplication::processEvents();
 }
 
 void Manager::onLongOperationsChain8() {
 	Operation op(__FUNCTION__, 15);
+	QCoreApplication::processEvents();
 }
 
 void Manager::onLongOperationsChain9() {
-	Operation op(__FUNCTION__, 15);
+	Operation op(__FUNCTION__, 20);
+	QCoreApplication::processEvents();
 }
 
 void Manager::onLongOperationsChain10() {
 	Operation op(__FUNCTION__, 15);
+	QCoreApplication::processEvents();
 }
 
 void Manager::onLongOperationsChain11() {
 	Operation op(__FUNCTION__, 15);
+	QCoreApplication::processEvents();
 }
 
 void Manager::onLongOperationsChain12() {
 	Operation op(__FUNCTION__, 15);
+	QCoreApplication::processEvents();
 }
 
 void Manager::onLongOperationsChain13() {
 	Operation op(__FUNCTION__, 15);
+	QCoreApplication::processEvents();
 }
 
 void Manager::onLongOperationsChain14() {
 	Operation op(__FUNCTION__, 15);
+	QCoreApplication::processEvents();
 }
 
 void Manager::onLongOperationsChain15() {
 	Operation op(__FUNCTION__, 15);
+	QCoreApplication::processEvents();
 }
 
 void Manager::onLongOperationsChain16() {
 	Operation op(__FUNCTION__, 15);
+	QCoreApplication::processEvents();
 }
 
 void Manager::onLongOperationsChain17() {
 	Operation op(__FUNCTION__, 15);
+	QCoreApplication::processEvents();
 }
 
 void Manager::onLongOperationsChain18() {
 	Operation op(__FUNCTION__, 15);
+	QCoreApplication::processEvents();
 }
 
 void Manager::onLongOperationsChain19() {
 	Operation op(__FUNCTION__, 15);
+	QCoreApplication::processEvents();
 }
 
 void Manager::loadQml() {
