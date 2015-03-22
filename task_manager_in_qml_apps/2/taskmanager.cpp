@@ -100,10 +100,6 @@ QSharedPointer<TaskManager::Scenario> TaskManager::addScenario(const QString & t
 	return scenario;
 }
 
-void TaskManager::invokeProcessing() {
-	processTask();
-}
-
 void TaskManager::onNextTaskTimer() {
 	try {
 		processTask();
@@ -157,15 +153,12 @@ void TaskManager::processTask() {
 		case TaskResult::Success: 
 			scenario->rootTask_ = task->successAncestor_;
 			break;
-		case TaskResult::NeedToWait:
-			// just leave current task active
-			return;
 		case TaskResult::MetaError:
 			// this must be handler earlier
 			qFatal("logic error");
 			return;
 		default:
-			// Treat everyting else as a failure
+			// Treat everything else as a failure
 			scenario->rootTask_ = task->failureAncestor_;
 			break;
 		}

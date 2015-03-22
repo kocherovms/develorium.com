@@ -12,7 +12,7 @@ Window {
     width: 800
     height: 600
     signal slowOperation()
-	signal longOperationsChain()
+    signal longOperationsChain()
 
     Rectangle {
 		anchors.fill: parent

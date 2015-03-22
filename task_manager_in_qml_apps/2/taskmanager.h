@@ -19,8 +19,7 @@ public:
 	enum TaskResult { 
 		MetaError,
 		Success, 
-		Failure, 
-		NeedToWait 
+		Failure
 	};
 	class Scenario;
 	class Task {
@@ -58,8 +57,7 @@ public:
 	typedef QSharedPointer<Scenario> ScenarioPtr;
 public:
 	TaskManager();
-	virtual QSharedPointer<Scenario> addScenario(const QString & theName);
-	virtual void invokeProcessing();
+	QSharedPointer<Scenario> addScenario(const QString & theName);
 private slots:
 	void onNextTaskTimer();
 private:
