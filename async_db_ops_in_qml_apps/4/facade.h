@@ -1,3 +1,9 @@
+/*
+
+Copyright Michael Kocherov, 2015
+http://develorium.com
+
+*/
 #ifndef FACADE_H_
 #define FACADE_H_
 

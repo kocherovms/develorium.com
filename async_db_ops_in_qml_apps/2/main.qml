@@ -1,3 +1,9 @@
+/*
+
+Copyright Michael Kocherov, 2015
+http://develorium.com
+
+*/
 import QtQuick 2.2
 import QtQuick.Window 2.1
 

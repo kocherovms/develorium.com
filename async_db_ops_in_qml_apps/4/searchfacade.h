@@ -1,3 +1,9 @@
+/*
+
+Copyright Michael Kocherov, 2015
+http://develorium.com
+
+*/
 #ifndef SEARCHFACADE_H_
 #define SEARCHFACADE_H_
 

@@ -1,3 +1,9 @@
+/*
+
+Copyright Michael Kocherov, 2015
+http://develorium.com
+
+*/
 #include <stdexcept>
 #include <QQuickWindow>
 #include <QApplication>

@@ -1,3 +1,9 @@
+/*
+
+Copyright Michael Kocherov, 2015
+http://develorium.com
+
+*/
 #ifndef STATISTICSFACADE_H_
 #define STATISTICSFACADE_H_
 

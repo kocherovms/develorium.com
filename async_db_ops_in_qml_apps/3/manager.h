@@ -1,3 +1,9 @@
+/*
+
+Copyright Michael Kocherov, 2015
+http://develorium.com
+
+*/
 #ifndef MANAGER_H_
 #define MANAGER_H_
 
