@@ -33,7 +33,7 @@ void Manager::onStatisticsButtonPressed() {
 }
 
 void Manager::loadQml() {
-	engine_.load(QUrl::fromLocalFile("main.qml"));
+	engine_.load(QUrl("qrc:/main.qml"));
 	const QList<QObject *> ro = engine_.rootObjects();
 	
 	if(ro.isEmpty())

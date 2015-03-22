@@ -1,3 +1,9 @@
+/*
+
+Copyright Michael Kocherov, 2015
+http://develorium.com
+
+*/
 #include <sys/select.h>
 #include <string.h>
 #include <iostream>

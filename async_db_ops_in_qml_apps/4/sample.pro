@@ -1,6 +1,9 @@
 TARGET = sample
 TEMPLATE = app
+DESTDIR = target
+OBJECTS_DIR = .build
+MOC_DIR = .build
 QT += core widgets qml quick concurrent
 SOURCES = main.cpp manager.cpp facade.cpp  searchfacade.cpp statisticsfacade.cpp
 HEADERS = manager.h facade.h searchfacade.h statisticsfacade.h
-
+RESOURCES += sample.qrc

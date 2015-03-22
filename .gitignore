@@ -3,5 +3,6 @@ qrc_*.cpp
 *.o
 *~
 Makefile
+a.out
 **/.build/**
 **/target/**
