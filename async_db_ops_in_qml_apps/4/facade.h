@@ -34,7 +34,7 @@ public:
 		QEventLoop loop;
 		QObject::connect(&fw, SIGNAL(finished()), &loop, SLOT(quit()));
 		fw.setFuture(QtConcurrent::run(&dynamic_cast<T &>(*this), theMethod, theArg1));
-		loop.exec(QEventLoop::ExcludeUserInputEvents);
+		loop.exec();
 		return extractResult(fw);
 	}
 protected:

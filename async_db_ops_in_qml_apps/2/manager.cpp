@@ -31,7 +31,7 @@ void Manager::onSearchButtonPressed(const QString & theSearchPhrase) {
 	connect(&fw, SIGNAL(finished()), &loop, SLOT(quit()));
 	Facade facade(connection_);
 	fw.setFuture(QtConcurrent::run(&facade, &Facade::search, theSearchPhrase));
-	loop.exec(QEventLoop::ExcludeUserInputEvents);
+	loop.exec();
 	fw.result();
 	qDebug() << __FUNCTION__ << "finished";
 }
