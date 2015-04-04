@@ -25,28 +25,28 @@ TaskManager::Task::Task(Scenario & theScenario, QObject * theObject, const QStri
 }
 
 QSharedPointer<TaskManager::Task> TaskManager::Task::addNextTask(QObject * theObject, const QString & theMethodName, const QVariantList & theArguments) {
- 	if(successAncestor_)
-		throw std::runtime_error(QString("Success ancestor for task %1 already exists: %2").arg(getDescription()).arg(successAncestor_->getDescription()).toStdString());
+ 	if(successSuccessor_)
+		throw std::runtime_error(QString("Success successor for task %1 already exists: %2").arg(getDescription()).arg(successSuccessor_->getDescription()).toStdString());
 
 	QSharedPointer<Task> task(new Task(scenario_, theObject, theMethodName, theArguments));
-	successAncestor_.swap(task);
-	qDebug() << QString("Success ancestor %1 added for task %2").arg(successAncestor_->getDescription()).arg(getDescription());
-	failureAncestor_ = successAncestor_;
-	return successAncestor_;
+	successSuccessor_.swap(task);
+	qDebug() << QString("Success successor %1 added for task %2").arg(successSuccessor_->getDescription()).arg(getDescription());
+	failureSuccessor_ = successSuccessor_;
+	return successSuccessor_;
 }
 
 TaskManager::Task::Branch TaskManager::Task::addNextTaskBranch() {
- 	if(successAncestor_)
-		throw std::runtime_error(QString("Success ancestor for task %1 already exists: %2").arg(getDescription()).arg(successAncestor_->getDescription()).toStdString());
-	else if(failureAncestor_)
-		throw std::runtime_error(QString("Failure ancestor for task %1 already exists: %2").arg(getDescription()).arg(failureAncestor_->getDescription()).toStdString());
+ 	if(successSuccessor_)
+		throw std::runtime_error(QString("Success successor for task %1 already exists: %2").arg(getDescription()).arg(successSuccessor_->getDescription()).toStdString());
+	else if(failureSuccessor_)
+		throw std::runtime_error(QString("Failure successor for task %1 already exists: %2").arg(getDescription()).arg(failureSuccessor_->getDescription()).toStdString());
 
 	QSharedPointer<Task> sa(new Task(scenario_, &scenario_.getTaskManager(), scenario_.getTaskManager().getDummyTaskName(), QVariantList()));
 	QSharedPointer<Task> fa(new Task(scenario_, &scenario_.getTaskManager(), scenario_.getTaskManager().getDummyTaskName(), QVariantList()));
-	successAncestor_.swap(sa);
-	failureAncestor_.swap(fa);
-	qDebug() << QString("Success ancestor %1 and failure ancestor %2 added for task %3").arg(successAncestor_->getDescription()).arg(failureAncestor_->getDescription()).arg(getDescription());
-	Branch branch = { successAncestor_, failureAncestor_ };
+	successSuccessor_.swap(sa);
+	failureSuccessor_.swap(fa);
+	qDebug() << QString("Success successor %1 and failure successor %2 added for task %3").arg(successSuccessor_->getDescription()).arg(failureSuccessor_->getDescription()).arg(getDescription());
+	Branch branch = { successSuccessor_, failureSuccessor_ };
 	return branch;
 }
 
@@ -138,7 +138,7 @@ void TaskManager::processTask() {
 		task = scenario->rootTask_;
 
 		if(task && task->methodName_ == getDummyTaskName()) {
-			scenario->rootTask_ = task->successAncestor_;
+			scenario->rootTask_ = task->successSuccessor_;
 			qDebug() << QString("Dummy task %1 skipped").arg(task->getDescription());
 		}
 		else break;
@@ -155,7 +155,7 @@ void TaskManager::processTask() {
 
 		switch(tr) {
 		case TaskResult::Success: 
-			scenario->rootTask_ = task->successAncestor_;
+			scenario->rootTask_ = task->successSuccessor_;
 			break;
 		case TaskResult::NeedToWait: 
 			// just leave current task active
@@ -166,7 +166,7 @@ void TaskManager::processTask() {
 			return;
 		default:
 			// Treat everything else as a failure
-			scenario->rootTask_ = task->failureAncestor_;
+			scenario->rootTask_ = task->failureSuccessor_;
 			break;
 		}
 	}

@@ -39,8 +39,8 @@ public:
 		QString methodName_;
 		enum { ArgumentsCount = 10 };
 		QVariantList args;
-		QSharedPointer<Task> successAncestor_;
-		QSharedPointer<Task> failureAncestor_;
+		QSharedPointer<Task> successSuccessor_;
+		QSharedPointer<Task> failureSuccessor_;
 	};
 	typedef QSharedPointer<Task> TaskPtr;
 	class Scenario {
