@@ -61,6 +61,6 @@ public class TracerAdder implements ClassFileTransformer {
 		epilog.append("System.out.println(\"--- " + theMethod.getLongName() + "\");");
 		
 		theMethod.insertBefore(prolog.toString());
-		theMethod.insertAfter(epilog.toString(), true);
+		theMethod.insertAfter(epilog.toString(), true); // true - add to the end of a method as with a 'finally' keyword (otherwise any exception will break tracing)
 	}
 }
