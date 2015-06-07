@@ -54,24 +54,6 @@ public class TracerAdder implements ClassFileTransformer {
 		
 		return classfileBuffer;
 	}
-	
-//	private static void addMethodTracing(CtClass theClass, CtMethod theMethod) throws NotFoundException, CannotCompileException {
-//		String originalMethodName = theMethod.getName();
-//		String methracedMethodName = theMethod.getName() + "$_methtraced";
-//		theMethod.setName(methracedMethodName);
-//		CtMethod proxyMethod = CtNewMethod.copy(theMethod, originalMethodName, theClass, null);
-//		StringBuffer body = new StringBuffer();
-//		body.append("{\n");
-//		body.append(" System.out.println(\"+++ " + originalMethodName + "\");\n");
-//		body.append(" try {\n");
-//		body.append("  return " + methracedMethodName + "($$);\n");
-//		body.append(" } finally {\n");
-//		body.append("  System.out.println(\"--- " + originalMethodName + "\");");
-//		body.append(" }\n");
-//		body.append("}\n");
-//		proxyMethod.setBody(body.toString());
-//		theClass.addMethod(proxyMethod);
-//	}
 	private static void addMethodTracing(CtClass theClass, CtMethod theMethod) throws NotFoundException, CannotCompileException {
 		StringBuffer prolog = new StringBuffer();
 		prolog.append("System.out.println(\"+++ " + theMethod.getLongName() + "\");");
