@@ -55,12 +55,9 @@ public class TracerAdder implements ClassFileTransformer {
 		return classfileBuffer;
 	}
 	private static void addMethodTracing(CtClass theClass, CtMethod theMethod) throws NotFoundException, CannotCompileException {
-		StringBuffer prolog = new StringBuffer();
-		prolog.append("System.out.println(\"+++ " + theMethod.getLongName() + "\");");
-		StringBuffer epilog = new StringBuffer();
-		epilog.append("System.out.println(\"--- " + theMethod.getLongName() + "\");");
-		
+		String prolog = "System.out.println(\"+++ " + theMethod.getLongName() + "\");";
+		String epilog = "System.out.println(\"--- " + theMethod.getLongName() + "\");";
 		theMethod.insertBefore(prolog.toString());
-		theMethod.insertAfter(epilog.toString(), true); // true - add to the end of a method as with a 'finally' keyword (otherwise any exception will break tracing)
+		theMethod.insertAfter(epilog.toString(), true);
 	}
 }
