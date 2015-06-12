@@ -8,55 +8,61 @@ import javassist.*;
 
 public class TracerAdder implements ClassFileTransformer {
 	public byte[] transform(ClassLoader loader, String className,
-			Class<?> classBeingRedefined, ProtectionDomain protectionDomain,
-			byte[] classfileBuffer) throws IllegalClassFormatException {
+				Class<?> classBeingRedefined, ProtectionDomain protectionDomain,
+				byte[] classfileBuffer) throws IllegalClassFormatException {
 		final String canonicalClassName = className.replaceAll("/", ".");
 		ClassPool cp = ClassPool.getDefault();
 		cp.insertClassPath(new ByteArrayClassPath(canonicalClassName, classfileBuffer));
 		boolean wasInstrumented = false;
-		
+	
 		try {
 			CtClass cc = cp.get(canonicalClassName);
-			
+		
 			for(CtMethod method : cc.getDeclaredMethods()) {
 				Object[] annotations = null;
 				try {
 					annotations = method.getAnnotations();
 				} catch (ClassNotFoundException e) {
-					System.err.println("Failed to get annotations of method " + method.getLongName() + ": " + e.toString());
+					String msg = String.format("Failed to get annotations of method %1s: %2s", 
+								   method.getLongName(), e.toString());
+					System.err.println(msg);
 					continue;
 				}
-				
+			
 				for (final Object ann : annotations) {
 					if (ann instanceof Traced) {
 						try {
 							addMethodTracing(cc, method);
 							wasInstrumented = true;
 						} catch (Exception e) {
-							System.err.println("Failed to add tracing to method " + method.getLongName() + ": " + e.toString());
+							String msg = String.format("Failed to add tracing to method %1s: %2s",
+										   method.getLongName(), e.toString());
+							System.err.println(msg);
 						}
 					}
 				}
 			}
-			
+		
 			if(wasInstrumented) {
 				try {
 					return cc.toBytecode();
 				} catch (Exception e) {
-					System.err.println("Failed to compile instrumented class " + canonicalClassName + ": " + e.toString());
-					return classfileBuffer;
+					String msg = String.format("Failed to compile instrumented class %1s: %2s",
+								   canonicalClassName, e.toString());
+					System.err.println(msg);
 				}
 			}
 		} catch (NotFoundException e) {
-			System.err.println("Failed to register class " + canonicalClassName + " in a javaassist ClassPool: " + e.toString());
-			return classfileBuffer;
+			String msg = String.format("Failed to register class %1s in a javaassist ClassPool: %2s",
+						   canonicalClassName, e.toString());
+			System.err.println(msg);
 		}
-		
+	
 		return classfileBuffer;
 	}
 	private static void addMethodTracing(CtClass theClass, CtMethod theMethod) throws NotFoundException, CannotCompileException {
-		String prolog = "System.out.println(\"+++ " + theMethod.getLongName() + "\");";
-		String epilog = "System.out.println(\"--- " + theMethod.getLongName() + "\");";
+		String prolog = String.format("System.out.println(\"+++ %1s \");", theMethod.getLongName());
+		String epilog = String.format("System.out.println(\"--- %1s \");", theMethod.getLongName());
 		theMethod.insertBefore(prolog.toString());
 		theMethod.insertAfter(epilog.toString(), true);
 	}
