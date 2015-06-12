@@ -1,6 +1,6 @@
-package com.develorium.methtracertest;
+package com.develorium.metracertest;
 
-import com.develorium.methtracer.Traced;
+import com.develorium.metracer.Traced;
 
 public class App {
 	public static void main( String[] args ) {

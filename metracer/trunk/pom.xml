@@ -3,10 +3,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.develorium</groupId>
-  <artifactId>methtracer</artifactId>
+  <artifactId>metracer</artifactId>
   <packaging>jar</packaging>
 
-  <name>methtracer</name>
+  <name>metracer</name>
   <url>http://maven.apache.org</url>
 
   <properties>
@@ -30,7 +30,7 @@
         <configuration>
           <archive>
             <manifestEntries>
-            	<Premain-Class>com.develorium.methtracer.Agent</Premain-Class>
+            	<Premain-Class>com.develorium.metracer.Agent</Premain-Class>
             </manifestEntries>
           </archive>
         </configuration>

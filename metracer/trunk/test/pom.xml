@@ -3,11 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.develorium</groupId>
-  <artifactId>methtracertest</artifactId>
+  <artifactId>metracertest</artifactId>
   <version>1.0.0</version>
   <packaging>jar</packaging>
 
-  <name>methtracertest</name>
+  <name>metracertest</name>
   <url>http://maven.apache.org</url>
 
   <properties>
@@ -23,7 +23,7 @@
     </dependency>
     <dependency>
     	<groupId>com.develorium</groupId>
-    	<artifactId>methtracer</artifactId>
+    	<artifactId>metracer</artifactId>
     	<version>1.0.0</version>
     </dependency>
   </dependencies>
@@ -36,7 +36,7 @@
         <configuration>
           <archive>
             <manifest>
-            	<mainClass>com.develorium.methtracertest.App</mainClass>
+            	<mainClass>com.develorium.metracertest.App</mainClass>
             </manifest>
           </archive>
         </configuration>

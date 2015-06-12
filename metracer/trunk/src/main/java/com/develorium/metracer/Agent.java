@@ -1,4 +1,4 @@
-package com.develorium.methtracer;
+package com.develorium.metracer;
 
 import java.lang.instrument.Instrumentation;
 

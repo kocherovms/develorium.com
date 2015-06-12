@@ -1,4 +1,4 @@
-package com.develorium.methtracer;
+package com.develorium.metracer;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
