@@ -8,10 +8,14 @@ public class AsyncJob1 implements Runnable {
 	}
 	@Traced
 	public void run() {              
+		perform();
+	}
+	@Traced
+	public void perform() {              
 		try {
 			Thread.sleep(duration_);
 		} catch (InterruptedException e) {
 		}
-    }
+	}
 	private int duration_ = 0;
 }

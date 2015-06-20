@@ -7,7 +7,11 @@ public class AsyncJob2 implements Runnable {
 		duration_ = theDuration;
 	}
 	@Traced
-	public void run() {              
+	public void run() {
+		perform();
+	}
+	@Traced
+	public void perform() {
 		try {
 			Thread.sleep(duration_);
 		} catch (InterruptedException e) {

@@ -60,17 +60,17 @@ public class TracerAdder implements ClassFileTransformer {
 		final String VarType = "com.develorium.metracer.TracingState";
 		final String VarName = "__com_develorium_tracing_state";
 		String prolog = 
-					String.format("%1$s %2$s = (%1$s)%3$s.get();", VarType, VarName, TracingStateFieldName) +
-					String.format("System.out.println(\"+++[\" + %1$s.submerge() + \"] %2$s\");", VarName, theMethod.getLongName());
+			String.format("%1$s %2$s = (%1$s)%3$s.get();", VarType, VarName, TracingStateFieldName) +
+			String.format("System.out.println(\"+++[\" + %1$s.submerge() + \"] %2$s\");", VarName, theMethod.getLongName());
 		String epilog = 
-					String.format("%1$s %2$s = (%1$s)%3$s.get();", VarType, VarName, TracingStateFieldName) +
-					String.format("System.out.println(\"---[\" + %1$s.getCallDepth() + \"] %2$s\");", VarName, theMethod.getLongName()) +
-					String.format("%1$s.emerge();", VarName);
+			String.format("%1$s %2$s = (%1$s)%3$s.get();", VarType, VarName, TracingStateFieldName) +
+			String.format("System.out.println(\"---[\" + %1$s.getCallDepth() + \"] %2$s\");", VarName, theMethod.getLongName()) +
+			String.format("%1$s.emerge();", VarName);
 		String epilogFinally = 
-				String.format("%1$s %2$s = (%1$s)%3$s.get();", VarType, VarName, TracingStateFieldName) +
-				String.format("if(%1$s.isException()) { System.out.println(\"---[\" + %1$s.getCallDepth() + \"] %2$s (by exception)\"); }", 
+			String.format("%1$s %2$s = (%1$s)%3$s.get();", VarType, VarName, TracingStateFieldName) +
+			String.format("if(%1$s.isException()) { System.out.println(\"---[\" + %1$s.getCallDepth() + \"] %2$s (by exception)\"); }", 
 							VarName, theMethod.getLongName()) +
-				String.format("%1$s.commitEmerge();", VarName);
+			String.format("%1$s.commitEmerge();", VarName);
 		theMethod.insertBefore(prolog.toString());
 		theMethod.insertAfter(epilog.toString());
 		theMethod.insertAfter(epilogFinally.toString(), true);
