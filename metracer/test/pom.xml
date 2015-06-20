@@ -4,7 +4,7 @@
 
   <groupId>com.develorium</groupId>
   <artifactId>metracertest</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <packaging>jar</packaging>
 
   <name>metracertest</name>
@@ -24,7 +24,7 @@
     <dependency>
     	<groupId>com.develorium</groupId>
     	<artifactId>metracer</artifactId>
-    	<version>1.0.0</version>
+    	<version>1.0.1</version>
     </dependency>
   </dependencies>
   

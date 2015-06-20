@@ -1,47 +1,25 @@
 package com.develorium.metracertest;
 
+import java.util.Random;
 import com.develorium.metracer.Traced;
 
 public class App {
+	@Traced
 	public static void main( String[] args ) {
-		init();
-		compute();
-		try {
-			computeMoreData();
-		} catch(Exception e) {
-			System.out.println("Failed to compute additional data: " + e.toString());
-		}
-		try {
-			computeEvenMoreData();
-		} catch(Exception e) {
-			System.out.println("Failed to compute additional data: " + e.toString());
-		}
-		printResults();
-	}
-	@Traced
-	private static void init() {
-		System.out.println("Initing program data");
-	}
-	@Traced
-	private static void compute() {
-		System.out.println("Computing data");
-	}
-	@Traced
-	private static void computeMoreData() throws Exception {
-		System.out.println("Computing more data but...");
-		throw new Exception("Something went wrong");
-	}
-	@Traced
-	private static void computeEvenMoreData() throws Exception {
-		System.out.println("Computing even more data but...");
-		try {
-			throw new Exception("Something went wrong");
-		} finally {
-			System.out.println("Resources for even more data computation released");
+		Thread[] jobs = { new Thread(new AsyncJob1(1 + random.nextInt(100))), new Thread(new AsyncJob2(1 + random.nextInt(100))) };
+		
+		for(Thread job : jobs) 
+			job.start();
+					
+		MainJob mainJob = new MainJob();
+		mainJob.perform();
+		
+		for(Thread job : jobs) {
+			try {
+				job.join();
+			} catch (InterruptedException e) {
+			}
 		}
 	}
-	@Traced
-	private static void printResults() {
-		System.out.println("Result is 42");
-	}
+	private final static Random random = new Random();
 }

@@ -23,9 +23,8 @@ public class TracerAdder implements ClassFileTransformer {
 				try {
 					annotations = method.getAnnotations();
 				} catch (ClassNotFoundException e) {
-					String msg = String.format("Failed to get annotations of method %1s: %2s", 
-								   method.getLongName(), e.toString());
-					System.err.println(msg);
+					System.err.format("Failed to get annotations of method %1$s: %2$s\n", 
+							method.getLongName(), e.toString());
 					continue;
 				}
 			
@@ -35,9 +34,8 @@ public class TracerAdder implements ClassFileTransformer {
 							addMethodTracing(cc, method);
 							wasInstrumented = true;
 						} catch (Exception e) {
-							String msg = String.format("Failed to add tracing to method %1s: %2s",
-										   method.getLongName(), e.toString());
-							System.err.println(msg);
+							System.err.format("Failed to add tracing to method %1$s: %2$s\n", 
+									method.getLongName(), e.toString());
 						}
 					}
 				}
@@ -47,23 +45,35 @@ public class TracerAdder implements ClassFileTransformer {
 				try {
 					return cc.toBytecode();
 				} catch (Exception e) {
-					String msg = String.format("Failed to compile instrumented class %1s: %2s",
-								   canonicalClassName, e.toString());
-					System.err.println(msg);
+					System.err.format("Failed to compile instrumented class %1$s: %2$s\n",
+							canonicalClassName, e.toString());
 				}
 			}
 		} catch (NotFoundException e) {
-			String msg = String.format("Failed to register class %1s in a javaassist ClassPool: %2s",
-						   canonicalClassName, e.toString());
-			System.err.println(msg);
+			System.err.format("Failed to register class %1$s in a javaassist ClassPool: %2$s\n",
+					   canonicalClassName, e.toString());
 		}
 	
 		return classfileBuffer;
 	}
 	private static void addMethodTracing(CtClass theClass, CtMethod theMethod) throws NotFoundException, CannotCompileException {
-		String prolog = String.format("System.out.println(\"+++ %1s \");", theMethod.getLongName());
-		String epilog = String.format("System.out.println(\"--- %1s \");", theMethod.getLongName());
+		final String VarType = "com.develorium.metracer.TracingState";
+		final String VarName = "__com_develorium_tracing_state";
+		String prolog = 
+					String.format("%1$s %2$s = (%1$s)%3$s.get();", VarType, VarName, TracingStateFieldName) +
+					String.format("System.out.println(\"+++[\" + %1$s.submerge() + \"] %2$s\");", VarName, theMethod.getLongName());
+		String epilog = 
+					String.format("%1$s %2$s = (%1$s)%3$s.get();", VarType, VarName, TracingStateFieldName) +
+					String.format("System.out.println(\"---[\" + %1$s.getCallDepth() + \"] %2$s\");", VarName, theMethod.getLongName()) +
+					String.format("%1$s.emerge();", VarName);
+		String epilogFinally = 
+				String.format("%1$s %2$s = (%1$s)%3$s.get();", VarType, VarName, TracingStateFieldName) +
+				String.format("if(%1$s.isException()) { System.out.println(\"---[\" + %1$s.getCallDepth() + \"] %2$s (by exception)\"); }", 
+							VarName, theMethod.getLongName()) +
+				String.format("%1$s.commitEmerge();", VarName);
 		theMethod.insertBefore(prolog.toString());
-		theMethod.insertAfter(epilog.toString(), true);
+		theMethod.insertAfter(epilog.toString());
+		theMethod.insertAfter(epilogFinally.toString(), true);
 	}
+	private static final String TracingStateFieldName = "com.develorium.metracer.TracingStateThreadLocal.instance";
 }
