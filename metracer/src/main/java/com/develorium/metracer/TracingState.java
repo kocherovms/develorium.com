@@ -1,3 +1,8 @@
+/*
+Copyright Michael Kocherov, 2015
+http://develorium.com
+*/
+
 package com.develorium.metracer;
 
 import java.util.Stack;

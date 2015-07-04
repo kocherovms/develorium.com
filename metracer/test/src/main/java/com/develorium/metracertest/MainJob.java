@@ -1,3 +1,8 @@
+/*
+Copyright Michael Kocherov, 2015
+http://develorium.com
+*/
+
 package com.develorium.metracertest;
 
 import com.develorium.metracer.Traced;
@@ -5,7 +10,7 @@ import com.develorium.metracer.Traced;
 public class MainJob {
 	@Traced
 	public void perform() {
-		init();
+		init("user", "123");
 		compute();
 		try {
 			computeMoreData();
@@ -21,7 +26,7 @@ public class MainJob {
 		printResults();
 	}
 	@Traced
-	private static void init() {
+	private static void init(String theUser, String thePassword) {
 		System.out.println("Initing program data");
 	}
 	@Traced

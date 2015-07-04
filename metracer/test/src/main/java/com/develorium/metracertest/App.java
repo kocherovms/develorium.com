@@ -1,3 +1,8 @@
+/*
+Copyright Michael Kocherov, 2015
+http://develorium.com
+*/
+
 package com.develorium.metracertest;
 
 import java.util.Random;

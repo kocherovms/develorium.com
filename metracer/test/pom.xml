@@ -4,7 +4,7 @@
 
   <groupId>com.develorium</groupId>
   <artifactId>metracertest</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
   <packaging>jar</packaging>
 
   <name>metracertest</name>
@@ -24,23 +24,7 @@
     <dependency>
     	<groupId>com.develorium</groupId>
     	<artifactId>metracer</artifactId>
-    	<version>1.0.1</version>
+    	<version>1.0.2</version>
     </dependency>
   </dependencies>
-  
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifest>
-            	<mainClass>com.develorium.metracertest.App</mainClass>
-            </manifest>
-          </archive>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 </project>
