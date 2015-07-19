@@ -1,0 +1,11 @@
+TARGET = portal
+TEMPLATE = app
+DESTDIR = target
+OBJECTS_DIR = .build
+MOC_DIR = .build
+RCC_DIR = .build
+QT += core widgets qml quick
+CONFIG += c++11
+SOURCES = main.cpp manager.cpp portal.cpp portalplugin.cpp
+HEADERS = manager.h portal.h
+RESOURCES += portal.qrc

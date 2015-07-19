@@ -1,0 +1,6 @@
+<RCC>
+  <qresource>
+	<file>master.qml</file>
+	<file>slave.qml</file>
+  </qresource>
+</RCC>
