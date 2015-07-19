@@ -10,6 +10,7 @@ import com.develorium.Portal 1.0
 Item {
     width: 400
     height: 300
+    anchors.fill: parent
 
     Portal {
 	objectName: "portal"

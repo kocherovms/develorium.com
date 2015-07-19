@@ -45,7 +45,7 @@ public slots:
 		}
 
 		const uint occupiedTextureId = occupiedTexture_ ? occupiedTexture_->id : 0;
-
+		// Construct a scene graph node
 		if(sgTexture_ && static_cast<uint>(sgTexture_->textureId()) != occupiedTextureId) 
 			sgTexture_.reset();
 
@@ -61,7 +61,7 @@ public slots:
 				setTexture(sgTexture_.data());
 			}
 		}
-
+		// Release all uneeded textures, i.e. mark them as ready for uploading an image's data
 		std::for_each(pendingTextures.begin(), pendingTextures.end(), [](TexturePtr & theTexture) {
 			theTexture->isBusy = 0;
 		});

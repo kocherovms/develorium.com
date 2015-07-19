@@ -30,6 +30,7 @@ Manager::Manager() {
 
 void Manager::onMasterOpenGlContextCreated(QOpenGLContext *) {
 	slave_->setTitle("Slave");
+	// Show slave window after master window in order to make OpenGL context's creation predictable
 	slave_->show();
 }
 
@@ -41,24 +42,19 @@ void Manager::onSlaveOpenGlContextCreated(QOpenGLContext * theContext) {
 }
 
 void Manager::onMasterAfterRendering() {
+	// Locate free (non-busy) texture where to upload data
 	const auto textureIt = std::find_if(std::begin(textures_), std::end(textures_), [](const Portal::TexturePtr & theTexture) { 
 		return !theTexture || !theTexture->isBusy; 
 	});
 
-	if(textureIt == std::end(textures_)) {
-		// failed to locate free texture for portal
-		return;
-	}
+	if(textureIt == std::end(textures_))
+		return; // no free textures so far
 	
 	const int textureIndex = std::distance(std::begin(textures_), textureIt);
 	Portal::TexturePtr & t = textures_[textureIndex];
-
+	// Create or recreate texture if needed
 	if(!t || !t->id || t->size != master_->size()) {
-		if(!t)
-			t.reset(new Portal::Texture);
-		else if(t->id)
-			glDeleteTextures(1, &t->id);
-
+		t.reset(new Portal::Texture); // will call glDeleteTextures as well
 		t->size = master_->size();
 		glGenTextures(1, &t->id);
 
@@ -70,12 +66,12 @@ void Manager::onMasterAfterRendering() {
 			glBindTexture(GL_TEXTURE_2D, 0);
 		}
 		else {
-			// failed to allocate texture?
+			// failed to allocate texture
 			t.reset();
 			return;
 		}
 	}
-
+	// Upload current framebuffer's content to texture
 	Q_ASSERT(t);
 	t->isBusy = 1;
 	glBindTexture(GL_TEXTURE_2D, t->id);
