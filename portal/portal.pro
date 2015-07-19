@@ -6,6 +6,6 @@ MOC_DIR = .build
 RCC_DIR = .build
 QT += core widgets qml quick
 CONFIG += c++11
-SOURCES = main.cpp manager.cpp portal.cpp portalplugin.cpp
+SOURCES = main.cpp manager.cpp portal.cpp
 HEADERS = manager.h portal.h
 RESOURCES += portal.qrc
