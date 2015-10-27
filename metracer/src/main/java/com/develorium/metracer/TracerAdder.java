@@ -5,8 +5,7 @@ http://develorium.com
 
 package com.develorium.metracer;
 
-import java.lang.instrument.ClassFileTransformer;
-import java.lang.instrument.IllegalClassFormatException;
+import java.lang.instrument.*;
 import java.security.ProtectionDomain;
 import java.util.*;
 import java.util.regex.*;
@@ -31,7 +30,7 @@ public class TracerAdder implements ClassFileTransformer {
 			try {
 				pattern = Pattern.compile(patternString);
 			} catch(PatternSyntaxException e) {
-				System.err.format("Provided pattern \"%1$s\" is malformed: %2$s", patternString, e.toString());
+				System.err.format("Provided pattern \"%1$s\" is malformed: %2$s\n", patternString, e.toString());
 			}
 		}
 	}
@@ -44,6 +43,11 @@ public class TracerAdder implements ClassFileTransformer {
 	
 		try {
 			CtClass cc = cp.get(canonicalClassName);
+
+			if(cc.isFrozen()) {
+				return classfileBuffer;
+			}
+
 			boolean wasInstrumented = instrumentViaAnnotation(cc);
 
 			if(!wasInstrumented && pattern != null)
