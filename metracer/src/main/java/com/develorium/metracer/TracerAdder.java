@@ -84,8 +84,8 @@ public class TracerAdder implements ClassFileTransformer {
 			for (final Object ann : annotations) {
 				if (ann instanceof Traced) {
 					try {
-						addMethodTracing(theClass, method);
-						wasInstrumented = true;
+						if(addMethodTracing(theClass, method))
+							wasInstrumented = true;
 					} catch (Exception e) {
 						System.err.format("Failed to add tracing to method %1$s: %2$s\n", 
 								  method.getLongName(), e.toString());
@@ -104,8 +104,8 @@ public class TracerAdder implements ClassFileTransformer {
 				final String methodNameForPatternMatching = String.format("%1$s::%2$s", theClass.getName(), method.getName());
 				
 				if(pattern.matcher(methodNameForPatternMatching).find(0)) {
-					addMethodTracing(theClass, method);
-					wasInstrumented = true;
+					if(addMethodTracing(theClass, method))
+						wasInstrumented = true;
 				}
 			} catch (Exception e) {
 				System.err.format("Failed to add tracing to method %1$s: %2$s\n", 
@@ -171,14 +171,19 @@ public class TracerAdder implements ClassFileTransformer {
 		rv.append("}");
 		return rv.toString().replaceAll("resultHolderName", theResultHolderName);
 	}
-	private void addMethodTracing(CtClass theClass, CtMethod theMethod) throws NotFoundException, CannotCompileException {
+	private boolean addMethodTracing(CtClass theClass, CtMethod theMethod) throws NotFoundException, CannotCompileException {
 		if(!isMethodInstrumentable(theMethod))
-			return;
+			return false;
+
+		String originalMethodName = theMethod.getName();
+		String wrappedMethodName = originalMethodName + "_metraced";
+		CtMethod wrappedMethod = CtNewMethod.copy(theMethod, wrappedMethodName, theClass, null);
+		theClass.addMethod(wrappedMethod);
 
 		final String VarType = "com.develorium.metracer.TracingState";
 		final String VarName = "__com_develorium_tracing_state";
 		String methodName = String.format("%s.%s", theClass.getName(), theMethod.getName());
-
+		
 		StringBuilder prolog = new StringBuilder();
 		prolog.append("{");
 		prolog.append(String.format(" %1$s %2$s = (%1$s)%3$s.get();", VarType, VarName, TracingStateFieldName));
@@ -187,14 +192,14 @@ public class TracerAdder implements ClassFileTransformer {
 		prolog.append(String.format("System.out.println(\"+++[\" + %1$s.submerge() + \"] %2$s(\" + argumentValues + \")\");", 
 					    VarName, methodName));
 		prolog.append("}");
-
+		
 		StringBuilder epilog = new StringBuilder();
 		epilog.append("{");
 		epilog.append(String.format("%1$s %2$s = (%1$s)%3$s.get();", VarType, VarName, TracingStateFieldName));
 		epilog.append(String.format("System.out.println(\"---[\" + %1$s.getCallDepth() + \"] %2$s\");", VarName, methodName));
 		epilog.append(String.format("%1$s.emerge();", VarName));
 		epilog.append("}");
-
+		
 		StringBuilder epilogFinally = new StringBuilder();
 		epilogFinally.append("{");
 		epilogFinally.append(String.format("%1$s %2$s = (%1$s)%3$s.get();", VarType, VarName, TracingStateFieldName));
@@ -203,9 +208,11 @@ public class TracerAdder implements ClassFileTransformer {
 		epilogFinally.append(String.format("%1$s.commitEmerge();", VarName));
 		epilogFinally.append("}");
 
+		theMethod.setBody(String.format("{return ($r)%1$s($$);}", wrappedMethodName));
 		theMethod.insertBefore(prolog.toString());
 		theMethod.insertAfter(epilog.toString());
 		theMethod.insertAfter(epilogFinally.toString(), true);
+		return true;
 	}
 	private static final String TracingStateFieldName = "com.develorium.metracer.TracingStateThreadLocal.instance";
 }
