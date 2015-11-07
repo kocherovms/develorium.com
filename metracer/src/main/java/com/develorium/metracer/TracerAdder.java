@@ -38,6 +38,10 @@ public class TracerAdder implements ClassFileTransformer {
 				Class<?> classBeingRedefined, ProtectionDomain protectionDomain,
 				byte[] classfileBuffer) throws IllegalClassFormatException {
 		final String canonicalClassName = className.replaceAll("/", ".");
+
+		if(canonicalClassName.indexOf("java.lang") == 0)
+			return classfileBuffer;
+
 		ClassPool cp = ClassPool.getDefault();
 		cp.insertClassPath(new ByteArrayClassPath(canonicalClassName, classfileBuffer));
 	

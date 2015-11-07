@@ -9,26 +9,24 @@ import java.util.Stack;
 
 public class TracingState {
 	public int submerge() {
-		callDepth = !frames.empty() ? frames.peek() + 1 : 0;
-		frames.push(callDepth);
-		return callDepth;
+		frames.push(false);
+		return frames.size() - 1;
 	}
 	public void emerge() {
-		if(!frames.empty()) 
-				frames.pop();
+		if(!frames.empty()) { 
+			frames.pop();
+			frames.push(true); // means this frame is emerged
+		}
 	}
 	public void commitEmerge() {
-		if(isException()) 
-			emerge();
-		
-		callDepth = !frames.empty() ? frames.peek() : 0;
+		if(!frames.empty())
+			frames.pop();
 	}
 	public int getCallDepth() {
-		return callDepth;
+		return frames.size() - 1;
 	}
 	public boolean isException() {
-		return !frames.empty() && frames.peek() == callDepth;
+		return !frames.empty() && frames.peek() == false;
 	}
-	private int callDepth = 0;
-	private Stack<Integer> frames = new Stack<Integer>();
+	private Stack<Boolean> frames = new Stack<Boolean>();
 }
