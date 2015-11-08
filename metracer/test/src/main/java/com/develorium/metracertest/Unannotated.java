@@ -19,5 +19,15 @@ public class Unannotated {
 		return 42;
 	}
 	static void testC(int theInt, float theFloat, double theDouble) {
+		testInnerC();
+	}
+	static void testInnerC() {
+		try {
+			testFaulty();
+		} catch(Throwable e) {
+		}
+	}
+	static void testFaulty() throws Throwable {
+		throw new Throwable();
 	}
 }

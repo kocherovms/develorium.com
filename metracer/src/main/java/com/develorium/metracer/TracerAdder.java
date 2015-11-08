@@ -163,10 +163,10 @@ public class TracerAdder implements ClassFileTransformer {
 
 		rv.append("}");
 		rv.append("for(int i = 0; i < $args.length; ++i) {");
-		rv.append(" Object rawN = argumentNames.get(new Integer(i));");
-		rv.append(" String n = rawN == null ? \"<unk>\" : (String)rawN;");
-		rv.append(" Object o = $args[i];");
-		rv.append(" String v = o == null ? \"null\" : o.toString();");
+		rv.append(" java.lang.Object rawN = argumentNames.get(new Integer(i));");
+		rv.append(" java.lang.String n = rawN == null ? \"<unk>\" : (String)rawN;");
+		rv.append(" java.lang.Object o = $args[i];");
+		rv.append(" java.lang.String v = o == null ? \"null\" : o.toString();");
 		rv.append(" if(v.length() > 128) v = v.substring(0, 128) + \"...\";");
 		rv.append(" if(i > 0) resultHolderName.append(\", \");");
 		rv.append(" resultHolderName.append(n);");
@@ -179,44 +179,52 @@ public class TracerAdder implements ClassFileTransformer {
 		if(!isMethodInstrumentable(theMethod))
 			return false;
 
+		String methodNameForPrinting = String.format("%s.%s", theClass.getName(), theMethod.getName());
 		String originalMethodName = theMethod.getName();
-		String wrappedMethodName = originalMethodName + "_metraced";
+		String wrappedMethodName = originalMethodName + MetracedSuffix;
 		CtMethod wrappedMethod = CtNewMethod.copy(theMethod, wrappedMethodName, theClass, null);
 		theClass.addMethod(wrappedMethod);
+		
+		StringBuilder body = new StringBuilder();
+		body.append("{");
+		body.append("java.lang.Thread thread = java.lang.Thread.currentThread();");
+		body.append("java.lang.StackTraceElement[] stackTraceElements = thread.getStackTrace();");
+		body.append("int callDepth = 0;");
+		body.append("for(int i = 0; i < stackTraceElements.length; i++) {");
+		body.append(" java.lang.StackTraceElement element = stackTraceElements[i];");
+		body.append(String.format(" if(element.getMethodName().indexOf(\"%1$s\") >= 0) {", MetracedSuffix));
+		body.append("  callDepth++;");
+		body.append(" }");
+		body.append("}");
+		body.append(getArgumentPrintingCode(theMethod, "argumentValuesRaw"));
+		body.append("java.lang.String argumentValues = argumentValuesRaw == null ? \"\" : argumentValuesRaw.toString();");
+		body.append(String.format("System.out.println(\"+++[\" + callDepth + \"] %1$s(\" + argumentValues + \")\");", methodNameForPrinting));
+		body.append("boolean isFinishedOk = false;");
+		body.append("try {");
 
-		final String VarType = "com.develorium.metracer.TracingState";
-		final String VarName = "__com_develorium_tracing_state";
-		String methodName = String.format("%s.%s", theClass.getName(), theMethod.getName());
-		
-		StringBuilder prolog = new StringBuilder();
-		prolog.append("{");
-		prolog.append(String.format(" %1$s %2$s = (%1$s)%3$s.get();", VarType, VarName, TracingStateFieldName));
-		prolog.append(getArgumentPrintingCode(theMethod, "argumentValuesRaw"));
-		prolog.append("String argumentValues = argumentValuesRaw == null ? \"\" : argumentValuesRaw.toString();");
-		prolog.append(String.format("System.out.println(\"+++[\" + %1$s.submerge() + \"] %2$s(\" + argumentValues + \")\");", 
-					    VarName, methodName));
-		prolog.append("}");
-		
-		StringBuilder epilog = new StringBuilder();
-		epilog.append("{");
-		epilog.append(String.format("%1$s %2$s = (%1$s)%3$s.get();", VarType, VarName, TracingStateFieldName));
-		epilog.append(String.format("System.out.println(\"---[\" + %1$s.getCallDepth() + \"] %2$s\");", VarName, methodName));
-		epilog.append(String.format("%1$s.emerge();", VarName));
-		epilog.append("}");
-		
-		StringBuilder epilogFinally = new StringBuilder();
-		epilogFinally.append("{");
-		epilogFinally.append(String.format("%1$s %2$s = (%1$s)%3$s.get();", VarType, VarName, TracingStateFieldName));
-		epilogFinally.append(String.format("if(%1$s.isException()) { System.out.println(\"---[\" + %1$s.getCallDepth() + \"] %2$s (by exception)\"); }", 
-						   VarName, methodName));
-		epilogFinally.append(String.format("%1$s.commitEmerge();", VarName));
-		epilogFinally.append("}");
+		CtClass returnType = theMethod.getReturnType();
+		String callMethodCode = "";
+		String returnResultCode = "";
 
-		theMethod.setBody(String.format("{return ($r)%1$s($$);}", wrappedMethodName));
-		theMethod.insertBefore(prolog.toString());
-		theMethod.insertAfter(epilog.toString());
-		theMethod.insertAfter(epilogFinally.toString(), true);
+		if(returnType == CtClass.voidType) {
+			callMethodCode = String.format("%1$s($$);", wrappedMethodName);
+		}
+		else {
+			callMethodCode = String.format("%1$s rv = %2$s($$);", returnType.getName(), wrappedMethodName);
+			returnResultCode = "return rv;";
+		}
+
+		body.append(callMethodCode);
+		body.append("isFinishedOk = true;");
+		body.append(returnResultCode);
+
+		body.append("} finally {");
+		body.append("java.lang.String trailingExceptionInfo = isFinishedOk ? \"\" : \" (by exception)\";");
+		body.append(String.format("System.out.println(\"---[\" + callDepth + \"] %1$s\" + trailingExceptionInfo);", methodNameForPrinting));
+		body.append("}");
+		body.append("}");
+		theMethod.setBody(body.toString());
 		return true;
 	}
-	private static final String TracingStateFieldName = "com.develorium.metracer.TracingStateThreadLocal.instance";
+	static final String MetracedSuffix = "_com_develorium_metraced";
 }
