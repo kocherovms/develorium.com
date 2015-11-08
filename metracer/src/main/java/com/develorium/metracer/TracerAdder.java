@@ -189,16 +189,20 @@ public class TracerAdder implements ClassFileTransformer {
 		body.append("{");
 		body.append("java.lang.Thread thread = java.lang.Thread.currentThread();");
 		body.append("java.lang.StackTraceElement[] stackTraceElements = thread.getStackTrace();");
+		body.append("java.lang.StringBuilder indent = new java.lang.StringBuilder();");
 		body.append("int callDepth = 0;");
 		body.append("for(int i = 0; i < stackTraceElements.length; i++) {");
 		body.append(" java.lang.StackTraceElement element = stackTraceElements[i];");
 		body.append(String.format(" if(element.getMethodName().indexOf(\"%1$s\") >= 0) {", MetracedSuffix));
 		body.append("  callDepth++;");
+		body.append("  if(callDepth < 32) {");
+		body.append("   indent.append(\" \");");
+		body.append("  }");
 		body.append(" }");
 		body.append("}");
 		body.append(getArgumentPrintingCode(theMethod, "argumentValuesRaw"));
 		body.append("java.lang.String argumentValues = argumentValuesRaw == null ? \"\" : argumentValuesRaw.toString();");
-		body.append(String.format("System.out.println(\"+++[\" + callDepth + \"] %1$s(\" + argumentValues + \")\");", methodNameForPrinting));
+		body.append(String.format("System.out.println(indent.toString() + \"+++[\" + callDepth + \"] %1$s(\" + argumentValues + \")\");", methodNameForPrinting));
 		body.append("boolean isFinishedOk = false;");
 		body.append("try {");
 
@@ -220,7 +224,7 @@ public class TracerAdder implements ClassFileTransformer {
 
 		body.append("} finally {");
 		body.append("java.lang.String trailingExceptionInfo = isFinishedOk ? \"\" : \" (by exception)\";");
-		body.append(String.format("System.out.println(\"---[\" + callDepth + \"] %1$s\" + trailingExceptionInfo);", methodNameForPrinting));
+		body.append(String.format("System.out.println(indent.toString() + \"---[\" + callDepth + \"] %1$s\" + trailingExceptionInfo);", methodNameForPrinting));
 		body.append("}");
 		body.append("}");
 		theMethod.setBody(body.toString());
