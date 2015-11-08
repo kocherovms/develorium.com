@@ -1,0 +1,1 @@
+A universal C++ guard class at your service! No more need to write such guards all over the places.
