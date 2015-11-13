@@ -16,6 +16,7 @@ import javassist.bytecode.*;
 public class TracerAdder implements ClassFileTransformer {
 	private String selfPackageName = null;
 	private Pattern pattern = null;
+	private Set<Integer> touchedClassLoaders = new HashSet<Integer>();
 
 	public TracerAdder(String theArguments) {
 		selfPackageName = this.getClass().getPackage().getName() + ".";
@@ -44,6 +45,15 @@ public class TracerAdder implements ClassFileTransformer {
 
 		ClassPool cp = ClassPool.getDefault();
 		cp.insertClassPath(new ByteArrayClassPath(canonicalClassName, classfileBuffer));
+		Integer loaderHashCode = loader.hashCode();
+
+		if(!touchedClassLoaders.contains(loaderHashCode)) {
+				touchedClassLoaders.add(loaderHashCode);
+				System.out.println("kms@ Touched class loader " + loader.toString());
+				LoaderClassPath loaderClassPath = new LoaderClassPath(loader);
+				cp.appendClassPath(loaderClassPath);
+				//System.out.println(loaderClassPath.toString());
+		}
 	
 		try {
 			CtClass cc = cp.get(canonicalClassName);
@@ -52,7 +62,7 @@ public class TracerAdder implements ClassFileTransformer {
 				return classfileBuffer;
 			}
 
-			boolean wasInstrumented = instrumentViaAnnotation(cc);
+			boolean wasInstrumented = false; //instrumentViaAnnotation(cc);
 
 			if(!wasInstrumented && pattern != null)
 				wasInstrumented = instrumentViaPattern(cc);
