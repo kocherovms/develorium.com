@@ -9,6 +9,7 @@ import java.lang.instrument.*;
 import java.security.ProtectionDomain;
 import java.util.*;
 import java.util.regex.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javassist.*;
 import javassist.bytecode.*;
@@ -49,10 +50,8 @@ public class TracerAdder implements ClassFileTransformer {
 
 		if(!touchedClassLoaders.contains(loaderHashCode)) {
 				touchedClassLoaders.add(loaderHashCode);
-				System.out.println("kms@ Touched class loader " + loader.toString());
 				LoaderClassPath loaderClassPath = new LoaderClassPath(loader);
 				cp.appendClassPath(loaderClassPath);
-				//System.out.println(loaderClassPath.toString());
 		}
 	
 		try {
@@ -62,7 +61,7 @@ public class TracerAdder implements ClassFileTransformer {
 				return classfileBuffer;
 			}
 
-			boolean wasInstrumented = false; //instrumentViaAnnotation(cc);
+			boolean wasInstrumented = instrumentViaAnnotation(cc);
 
 			if(!wasInstrumented && pattern != null)
 				wasInstrumented = instrumentViaPattern(cc);
@@ -191,10 +190,11 @@ public class TracerAdder implements ClassFileTransformer {
 
 		String methodNameForPrinting = String.format("%s.%s", theClass.getName(), theMethod.getName());
 		String originalMethodName = theMethod.getName();
-		String wrappedMethodName = originalMethodName + MetracedSuffix;
-		CtMethod wrappedMethod = CtNewMethod.copy(theMethod, wrappedMethodName, theClass, null);
+		// Adding nonce is req-d to avoid unwanted downstream (Base->Inherited) virtual calls from _metraced methods
+		String wrappedMethodName = String.format("%s%s%d", originalMethodName, MetracedSuffix, MetracerNonce.incrementAndGet());
+		final CtMethod wrappedMethod = CtNewMethod.copy(theMethod, wrappedMethodName, theClass, null);
 		theClass.addMethod(wrappedMethod);
-		
+
 		StringBuilder body = new StringBuilder();
 		body.append("{");
 		body.append("java.lang.Thread thread = java.lang.Thread.currentThread();");
@@ -241,4 +241,5 @@ public class TracerAdder implements ClassFileTransformer {
 		return true;
 	}
 	static final String MetracedSuffix = "_com_develorium_metraced";
+	static final AtomicInteger MetracerNonce = new AtomicInteger();
 }
