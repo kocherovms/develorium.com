@@ -10,14 +10,15 @@ import java.security.ProtectionDomain;
 import java.util.*;
 import java.util.regex.*;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import javassist.*;
 import javassist.bytecode.*;
 
 public class TracerAdder implements ClassFileTransformer {
+	static final String MetracedSuffix = "_com_develorium_metraced";
+	static final AtomicInteger MetracerNonce = new AtomicInteger();
 	private String selfPackageName = null;
 	private Pattern pattern = null;
-	private Set<Integer> touchedClassLoaders = new HashSet<Integer>();
+	private ClassPools classPools = new ClassPools();
 
 	public TracerAdder(String theArguments) {
 		selfPackageName = this.getClass().getPackage().getName() + ".";
@@ -44,16 +45,9 @@ public class TracerAdder implements ClassFileTransformer {
 		if(canonicalClassName.indexOf("java.lang") == 0)
 			return classfileBuffer;
 
-		ClassPool cp = ClassPool.getDefault();
+		ClassPool cp = classPools.getClassPool(loader);
 		cp.insertClassPath(new ByteArrayClassPath(canonicalClassName, classfileBuffer));
-		Integer loaderHashCode = loader.hashCode();
 
-		if(!touchedClassLoaders.contains(loaderHashCode)) {
-				touchedClassLoaders.add(loaderHashCode);
-				LoaderClassPath loaderClassPath = new LoaderClassPath(loader);
-				cp.appendClassPath(loaderClassPath);
-		}
-	
 		try {
 			CtClass cc = cp.get(canonicalClassName);
 
@@ -240,6 +234,4 @@ public class TracerAdder implements ClassFileTransformer {
 		theMethod.setBody(body.toString());
 		return true;
 	}
-	static final String MetracedSuffix = "_com_develorium_metraced";
-	static final AtomicInteger MetracerNonce = new AtomicInteger();
 }
