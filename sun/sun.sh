@@ -2,7 +2,7 @@
 set -e
 
 if [ "$#" -ne 1 ]; then
-	echo "Usage: $0 PID\nUnmasks socket information from ls -l /proc/$PID/fd"
+	echo "Usage: $0 PID\nUnmasks socket information from ls -l /proc/\$PID/fd"
 	exit 1
 fi
 
