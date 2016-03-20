@@ -1,0 +1,12 @@
+#!/bin/sh
+MYSELF=$(which "$0" 2>/dev/null)
+[ $? -gt 0 -a -f "$0" ] && MYSELF="./$0"
+# Save terminal state
+stty_save=$(stty -g)
+# Disable symbols echoing and move terminal into raw mode
+stty -echo
+stty cbreak
+java -jar "$MYSELF" "$@"
+# Restore terminal state
+stty $stty_save
+exit 0
