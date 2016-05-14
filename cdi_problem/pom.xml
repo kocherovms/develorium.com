@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.develorium.cdi_problem</groupId>
+  <artifactId>app</artifactId>
+  <name>app</name>
+  <packaging>pom</packaging>
+  <version>1.0</version>
+
+  <properties>
+	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+	<javaee.api.version>7.0</javaee.api.version>
+	<maven.compiler.plugin.version>3.1</maven.compiler.plugin.version>
+	<maven.source.plugin.version>2.2.1</maven.source.plugin.version>
+	<maven.clean.plugin.version>2.5</maven.clean.plugin.version>
+	<maven.war.plugin.version>2.3</maven.war.plugin.version>
+	<maven.ear.plugin.version>2.8</maven.ear.plugin.version>
+	<maven.ejb.plugin.version>2.3</maven.ejb.plugin.version>
+	<maven.jar.plugin.version>2.4</maven.jar.plugin.version>
+	<maven.release.plugin.version>2.4.1</maven.release.plugin.version>
+	<maven.exec.plugin.version>1.2.1</maven.exec.plugin.version>
+	<junit.version>4.5</junit.version>
+	<xserver.rest.api.version>1.0</xserver.rest.api.version>
+  </properties>
+
+  <modules>
+    <module>hello-ejb</module>
+	<module>hello-ear</module>
+	<module>hello-war</module>
+  </modules>
+
+  <dependencies>
+	<dependency>
+	  <groupId>javax</groupId>
+	  <artifactId>javaee-api</artifactId>
+	  <version>${javaee.api.version}</version>
+	  <scope>provided</scope>
+	</dependency>
+  </dependencies>
+
+ <build>
+   <pluginManagement>
+	 <plugins>
+	   <plugin>
+		 <groupId>org.apache.maven.plugins</groupId>
+		 <artifactId>maven-compiler-plugin</artifactId>
+		 <version>${maven.compiler.plugin.version}</version>
+		 <configuration>
+		   <source>1.8</source>
+		   <target>1.8</target>
+		   <compilerArgs>
+			 <arg>-Xlint</arg>
+		   </compilerArgs>
+		 </configuration>
+	   </plugin>
+	   <plugin>
+		 <groupId>org.apache.maven.plugins</groupId>
+		 <artifactId>maven-ejb-plugin</artifactId>
+		 <version>${maven.ejb.plugin.version}</version>
+		 <configuration>
+		   <ejbVersion>3.2</ejbVersion>
+		   <generateClient>true</generateClient>
+		 </configuration>
+	   </plugin>
+	   <plugin>
+		 <groupId>org.apache.maven.plugins</groupId>
+		 <artifactId>maven-war-plugin</artifactId>
+		 <version>${maven.war.plugin.version}</version>
+		 <configuration>
+		   <failOnMissingWebXml>false</failOnMissingWebXml>
+		 </configuration>
+	   </plugin>
+	 </plugins>
+   </pluginManagement>
+ </build>
+</project>

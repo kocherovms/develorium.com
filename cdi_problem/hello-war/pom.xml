@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.develorium.cdi_problem</groupId>
+    <artifactId>app</artifactId>
+    <version>1.0</version>
+  </parent>
+
+  <groupId>com.develorium.cdi_problem</groupId>
+  <artifactId>hello-war</artifactId>
+  <name>hello-war</name>
+  <version>1.0</version>
+  <packaging>war</packaging>
+
+  <dependencies>
+	<dependency>
+	  <groupId>com.develorium.cdi_problem</groupId>
+	  <artifactId>hello-ejb</artifactId>
+	  <version>${project.version}</version>
+	  <type>ejb-client</type>
+	  <scope>provided</scope>
+	</dependency>
+  </dependencies>
+
+  <build>
+	<plugins>
+	  <plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-war-plugin</artifactId>
+		<configuration>
+		  <webResources>
+			<resource>
+			  <directory>${basedir}/src/main/webapp/WEB-INF</directory>
+			  <targetPath>WEB-INF</targetPath>
+			  <filtering>true</filtering>
+			</resource>
+		  </webResources>
+		</configuration>
+	  </plugin>
+	</plugins>
+  </build>
+</project>

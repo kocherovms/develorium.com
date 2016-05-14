@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.develorium.cdi_problem</groupId>
+    <artifactId>app</artifactId>
+    <version>1.0</version>
+  </parent>
+
+  <groupId>com.develorium.cdi_problem</groupId>
+  <artifactId>hello-ear</artifactId>
+  <name>hello-ear</name>
+  <packaging>ear</packaging>
+
+  <dependencies>
+	<dependency>
+	  <groupId>com.develorium.cdi_problem</groupId>
+	  <artifactId>hello-ejb</artifactId>
+	  <version>${project.version}</version>
+	  <type>ejb</type>
+	</dependency>
+	<dependency>
+	  <groupId>com.develorium.cdi_problem</groupId>
+	  <artifactId>hello-war</artifactId>
+	  <version>${project.version}</version>
+	  <type>war</type>
+	</dependency>
+  </dependencies>
+
+  <build>
+	<plugins>
+	  <plugin>
+		<artifactId>maven-ear-plugin</artifactId>
+		<version>${maven.ear.plugin.version}</version>
+		<configuration>
+		  <version>6</version>
+		  <defaultLibBundleDir>lib</defaultLibBundleDir>
+		  <modules>
+			<webModule>
+			  <groupId>com.develorium.cdi_problem</groupId>
+			  <artifactId>hello-war</artifactId>
+			  <contextRoot>/</contextRoot>
+			</webModule>
+			<ejbModule>
+			  <groupId>com.develorium.cdi_problem</groupId>
+			  <artifactId>hello-ejb</artifactId>
+			  <bundleFileName>hello-ejb.jar</bundleFileName>
+			</ejbModule>
+		  </modules>
+		</configuration>
+	  </plugin>
+	</plugins>
+  </build>
+</project>
