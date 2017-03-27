@@ -12,4 +12,12 @@
   <artifactId>hello-ejb</artifactId>
   <name>hello-ejb</name>
   <packaging>ejb</packaging>
+
+  <dependencies>
+	<dependency>
+	  <groupId>com.develorium.cdi_problem</groupId>
+	  <artifactId>common</artifactId>
+	  <version>${project.version}</version>
+	</dependency>
+  </dependencies>
 </project>

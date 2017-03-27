@@ -11,21 +11,22 @@ Item {
     height: 300
 
     Rectangle {
-	anchors.fill: parent
-	color: "#2d333a"
+		anchors.fill: parent
+		color: "#2d333a"
 
-	Image {
-	    id: logo
-	    anchors.horizontalCenter: parent.horizontalCenter
-	    anchors.verticalCenter: parent.verticalCenter
-	    source: "http://develorium.com/wp-content/uploads/2015/02/logo2_3.png"
-	}
+		Image {
+			id: logo
+			anchors.fill: parent
+			source: "http://develorium.com/wp-content/uploads/2015/02/logo2_3.png"
+		}
 
-	Timer {
-	    interval: 40
-	    repeat: true
-	    running: true
-	    onTriggered: logo.rotation += 1
-	}
+		Timer {
+			interval: 40
+			repeat: true
+			running: true
+			onTriggered: logo.rotation += 1
+		}
+
+		border.color: "red"
     }
 }

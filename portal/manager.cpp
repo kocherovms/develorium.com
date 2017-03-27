@@ -24,6 +24,7 @@ Manager::Manager() {
 	   false)
 		throw std::runtime_error("Failed to connect objects");
 
+	master_->setResizeMode(QQuickView::SizeRootObjectToView);
 	master_->setTitle("Master");
 	master_->show();
 }

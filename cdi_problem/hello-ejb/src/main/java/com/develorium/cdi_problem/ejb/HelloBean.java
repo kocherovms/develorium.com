@@ -1,19 +1,23 @@
 package com.develorium.cdi_problem.ejb;
 
+import com.develorium.cdi_problem.Guest;
+import com.develorium.cdi_problem.GuestMarker;
 import com.develorium.cdi_problem.api.Hello;
-import com.develorium.cdi_problem.domain.Guest;
-import com.develorium.cdi_problem.domain.GuestMarker;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.spi.CDI;
 
 @Stateless
 public class HelloBean implements Hello {
 	@Inject
+	@RequestScoped
 	@GuestMarker
-	Guest guest;
+	private Guest guest;
 
 	@Override
 	public String getHelloText() {
-		return String.format("Hello, %s!\n", guest.getName());
+		//Guest guest = CDI.current().select(Guest.class).get();
+		return String.format("Hello, %s (%s)!\n", guest != null ? guest.getName() : null, guest);
 	}
 }

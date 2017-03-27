@@ -22,6 +22,11 @@
 	  <type>ejb-client</type>
 	  <scope>provided</scope>
 	</dependency>
+	<dependency>
+	  <groupId>com.develorium.cdi_problem</groupId>
+	  <artifactId>common</artifactId>
+	  <version>${project.version}</version>
+	</dependency>
   </dependencies>
 
   <build>

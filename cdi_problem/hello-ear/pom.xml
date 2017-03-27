@@ -36,6 +36,7 @@
 		<configuration>
 		  <version>6</version>
 		  <defaultLibBundleDir>lib</defaultLibBundleDir>
+          <skinnyWars>true</skinnyWars>
 		  <modules>
 			<webModule>
 			  <groupId>com.develorium.cdi_problem</groupId>
